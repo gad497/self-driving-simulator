@@ -68,9 +68,10 @@ def pan(image):
         return out
     
 def change_brightness(image):
-    offset = int(random.random()*0.2*255)
     image_copy = image.copy()
-    image_copy[:,:,0] = np.clip(image[:,:,0] - offset, 0, 255)
+    brightness_range = image_copy.max() - image_copy.min()
+    offset = int(random.random()*0.2*brightness_range)
+    image_copy = np.clip(image - offset, 0, 255)
     return image_copy
 
 def flip(image, steering_angle):
@@ -198,7 +199,7 @@ checkpoint = ModelCheckpoint(
 history = model.fit(
     batch_generator(X_train, y_train, 128, 1),
     steps_per_epoch=128*5,
-    epochs=20,
+    epochs=10,
     validation_data=batch_generator(X_val, y_val, 64, 0),
     validation_steps=64*2,
     verbose=1,
